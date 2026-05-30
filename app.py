@@ -127,6 +127,33 @@ def settings():
 def logout():
     session.clear()
     return redirect(url_for('login'))
+# قائمة مؤقتة في الذاكرة لحفظ الاقتراحات المستقبلية
+suggestions_list = []
 
+# 1. مسار لعرض صفحة اتصل بنا
+@app.route('/contact')
+def contact_page():
+    return render_template('contact.html')
+
+# 2. مسار لاستقبال البيانات ومعالجتها بعد الضغط على الإرسال
+@app.route('/send-suggestion', methods=['POST'])
+def send_suggestion():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        email = request.form.get('email')
+        message = request.form.get('message')
+        
+        # حفظ الاقتراح في القائمة
+        suggestions_list.append({
+            'name': name,
+            'email': email,
+            'message': message
+        })
+        
+        # طباعة الاقتراح في السيرفر لمشاهدته فوراً
+        print(f"📩 اقتراح جديد من {name}: {message}")
+        
+        # رسالة شكر سريعة تظهر للمستخدم (يمكننا تحسينها لاحقاً بواجهة مخصصة)
+        return f"<dir dir='rtl' style='text-align:center; padding-top:50px;'><h2>شكراً لك يا {name}! ❤️</h2><p>تم استلام اقتراحك بنجاح وسيتطلع عليه مطور المنظومة الحالية.</p><a href='/'>العودة للموقع</a></dir>"
 if __name__ == '__main__':
     app.run(debug=True, host='127.0.0.1', port=5000)
