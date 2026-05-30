@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تقديم اقتراح أو طلب مساعدة</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .contact-container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+        h2 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        p {
+            color: #7f8c8d;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #34495e;
+            font-weight: bold;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+        textarea {
+            resize: vertical;
+            height: 120px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #219653;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            color: #3498db;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="contact-container">
+    <h2>💡 صندوق الاقتراحات والدعم</h2>
+    <p>رأيك يهمنا لتطوير المنظومة! يرجى كتابة اقتراحك أو طلب المساعدة وسيقوم المطور بمراجعتها.</p>
+    
+    <form action="/send-suggestion" method="POST">
+        <div class="form-group">
+            <label for="name">الاسم الكامل:</label>
+            <input type="text" id="name" name="name" placeholder="مثال: كريم بن محمد" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="email">البريد الإلكتروني (الاختياري):</label>
+            <input type="email" id="email" name="email" placeholder="name@email.com">
+        </div>
+        
+        <div class="form-group">
+            <label for="message">نص الاقتراح أو المشكلة:</label>
+            <textarea id="message" name="message" placeholder="اكتب تفاصيل اقتراحك هنا..." required></textarea>
+        </div>
+        
+        <button type="submit">إرسال الاقتراح السريع 🚀</button>
+    </form>
+    
+    <a href="/" class="back-link">العودة إلى الرئيسية</a>
+</div>
+
+</body>
+</html>
