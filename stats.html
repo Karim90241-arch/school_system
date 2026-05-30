@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التقرير الإحصائي العام</title>
+    <style>
+        :root { 
+            --bg: #0f172a; 
+            --card: #1e293b; 
+            --accent: #3b82f6; 
+            --neon: #10b981;
+            --danger: #ef4444;
+            --text-muted: #94a3b8;
+        }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; padding: 30px; }
+        .container { max-width: 1000px; margin: auto; }
+        
+        .grid-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; margin-top: 30px; }
+        
+        /* كارت إحصائيات التخصص المطور */
+        .stat-section-card { 
+            background: var(--card); 
+            border: 1px solid #334155; 
+            border-radius: 15px; 
+            padding: 25px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .stat-section-card h3 { margin-top: 0; color: #f8fafc; font-size: 1.25rem; border-bottom: 1px solid #334155; padding-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+        
+        .metrics { display: flex; justify-content: space-between; margin: 20px 0 15px 0; }
+        .metric-box { text-align: center; flex: 1; }
+        .metric-box span { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px; }
+        .metric-box strong { font-size: 1.5rem; color: white; }
+        
+        /* شريط التقدم البياني الملون */
+        .progress-container { background: #0f172a; border-radius: 10px; height: 12px; width: 100%; overflow: hidden; position: relative; margin-top: 15px; border: 1px solid #1e293b; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--neon)); transition: width 0.5s ease-in-out; }
+        
+        .rate-text { font-size: 0.9rem; font-weight: bold; color: var(--neon); text-align: left; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h2>📊 التقرير الإحصائي وتحليل أداء الأقسام</h2>
+            <a href="/dashboard" style="color:var(--accent); text-decoration:none; font-weight:bold;">← لوحة التحكم الرئيسية</a>
+        </div>
+        <p style="color:var(--text-muted);">رصد ومتابعة مستويات التزام وحضور المتربصين عبر الـ 7 أقسام المعتمدة في المركز بشكل تحليلي دقيق.</p>
+        
+        <div class="grid-stats">
+            {% for section_name, data in stats.items() %}
+            <div class="stat-section-card">
+                <h3>
+                    <span>📂 {{ section_name }}</span>
+                </h3>
+                
+                <div class="metrics">
+                    <div class="metric-box">
+                        <span>المسجلين</span>
+                        <strong>{{ data.total }}</strong>
+                    </div>
+                    <div class="metric-box" style="border-right: 1px solid #334155; border-left: 1px solid #334155;">
+                        <span>حاضر اليوم</span>
+                        <strong style="color: var(--neon);">{{ data.present }}</strong>
+                    </div>
+                    <div class="metric-box">
+                        <span>غائب اليوم</span>
+                        <strong style="color: var(--danger);">{{ data.absent }}</strong>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-muted);">
+                        <span>معدل الانضباط السلوكي للحضور:</span>
+                        <span style="color: var(--neon); font-weight: bold;">{{ data.rate }}%</span>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: {{ data.rate }}%;"></div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</body>
+</html>

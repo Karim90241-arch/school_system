@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>رصد الحضور والغياب اليومي</title>
+    <style>
+        :root { 
+            --bg: #0f172a; 
+            --card: #1e293b; 
+            --accent: #3b82f6; 
+            --success: #22c55e;
+            --danger: #ef4444;
+            --text-muted: #94a3b8;
+        }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; padding: 30px; }
+        .container { max-width: 1000px; margin: auto; }
+        
+        /* تصميم كروت الأقسام السبعة */
+        .section-box { 
+            background: var(--card); 
+            border: 1px solid #334155; 
+            border-radius: 12px; 
+            margin-bottom: 20px; 
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .section-header { 
+            background: #1e293b; 
+            padding: 18px 25px; 
+            cursor: pointer; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            border-bottom: 1px solid #334155;
+            transition: background 0.2s;
+        }
+        .section-header:hover { background: #24334d; }
+        .section-title { font-size: 1.2rem; font-weight: bold; color: #f8fafc; }
+        .section-badge { background: var(--accent); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; }
+        
+        /* القائمة المنسدلة للمتربصين */
+        .trainees-content { display: none; padding: 20px; background: #131c2e; }
+        
+        /* تصميم جدول المتربصين */
+        .trainees-table { width: 100%; border-collapse: collapse; text-align: right; }
+        .trainees-table th { padding: 12px; color: var(--text-muted); border-bottom: 2px solid #334155; font-size: 0.95rem; }
+        .trainees-table td { padding: 14px 12px; border-bottom: 1px solid #1e293b; font-size: 1rem; }
+        
+        /* أزرار الحالة والـ SMS */
+        .btn-status { padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; display: inline-block; border: none; cursor: pointer; }
+        .status-present { background: rgba(34, 197, 94, 0.2); color: var(--success); border: 1px solid var(--success); }
+        .status-absent { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger); }
+        
+        .btn-sms { background: #f59e0b; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 0.85rem; cursor: pointer; margin-right: 8px; }
+        .btn-sms:hover { background: #d97706; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px;">
+            <h2>📝 سجلات ورصد الحضور والغياب اليومي</h2>
+            <a href="/dashboard" style="color:var(--accent); text-decoration:none; font-weight:bold;">← لوحة التحكم الرئيسية</a>
+        </div>
+        <p style="color:var(--text-muted); margin-bottom: 30px;">انقر على اسم القسم المُراد تحضيره لفتح القائمة الاسمية الخاصة بمتربصيه ورصد غياباتهم فوراً.</p>
+
+        {% set sections_list = [
+            "إعلام آلي (ميكرو-إنفورماتيك)", 
+            "كهرباء معماري", 
+            "ميكانيك خودرو", 
+            "إلكترونيات صناعية", 
+            "تسيير الموارد البشرية", 
+            "محاسبة وتسيير", 
+            "أمانة مكتبية"
+        ] %}
+
+        {% for current_section in sections_list %}
+        <div class="section-box">
+            <div class="section-header" onclick="toggleSection('sec-{{ loop.index }}')">
+                <div class="section-title">📂 {{ current_section }}</div>
+                <div>
+                    <span class="section-badge">اضغط للاستعراض والتسيير</span>
+                </div>
+            </div>
+            
+            <div class="trainees-content" id="sec-{{ loop.index }}">
+                <table class="trainees-table">
+                    <thead>
+                        <tr>
+                            <th>المعرف (ID)</th>
+                            <th>اسم ولقب المتربص</th>
+                            <th>هاتف ولي الأمر</th>
+                            <th>حالة الحضور اليوم</th>
+                            <th>إجراءات سريعة</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% set count = namespace(value=0) %}
+                        {% for t in trainees %}
+                            {% if t.section == current_section %}
+                            {% set count.value = count.value + 1 %}
+                            <tr>
+                                <td style="color: var(--text-muted);">#{{ t.id }}</td>
+                                <td><strong>{{ t.name }}</strong></td>
+                                <td><code style="color:#cbd5e1;">{{ t.parent_phone }}</code></td>
+                                <td>
+                                    <a href="/toggle_status/{{ t.id }}" class="btn-status {% if t.status == 'حاضر' %}status-present{% else %}status-absent{% endif %}">
+                                        {% if t.status == 'حاضر' %}🟢 حاضر{% else %}🔴 غائب{% endif %}
+                                    </a>
+                                </td>
+                                <td>
+                                    <button class="btn-sms" onclick="sendSMS('{{ t.id }}', '{{ t.name }}')">💬 إرسال SMS للولي</button>
+                                </td>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if count.value == 0 %}
+                        <tr>
+                            <td colspan="5" style="text-align:center; color:#64748b; padding: 20px;">لا يوجد متربصين مسجلين في هذا القسم حتى الآن.</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        // دالة التبديل والفتح والإغلاق الانسيابي للأقسام
+        function toggleSection(id) {
+            var content = document.getElementById(id);
+            if (content.style.display === "block") {
+                content.style.display = "none";
+            } else {
+                content.style.display = "block";
+            }
+        }
+
+        // دالة محاكاة إرسال الـ SMS الذكية بـ Ajax دون تحديث الصفحة
+        function sendSMS(id, name) {
+            fetch('/send_sms_ajax/' + id)
+                .then(response => response.text())
+                .then(data => {
+                    alert('🚀 تم إرسال رسالة إنذار بالغياب بنجاح لولي أمر المتربص: ' + name);
+                })
+                .catch(err => alert('حدث خطأ في الاتصال ببوابة الـ SMS'));
+        }
+    </script>
+</body>
+</html>
