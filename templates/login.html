@@ -11,6 +11,14 @@
         button:hover { background: #2563eb; }
     </style>
 </head>
+   <script>
+    const form = document.querySelector('form');
+    const loader = document.getElementById('loader'); // تأكد أنك أعطيت الـ div الخاص بالـ svg هذا الـ id
+
+    form.addEventListener('submit', function() {
+        loader.style.display = 'block'; // يظهر الـ loader عند الضغط
+    });
+</script> 
 <body>
     <div class="login-card">
         <h2>نظام برج 4 🎓</h2>
