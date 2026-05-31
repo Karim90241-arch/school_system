@@ -10,6 +10,10 @@
         button { width: 100%; padding: 12px; background: #3b82f6; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
         button:hover { background: #2563eb; }
     </style>
+    /* هذا السطر يضمن اختفاء الـ loader عند فتح الصفحة */
+#loader {
+    display: none; 
+}
 </head>
    <script>
     const form = document.querySelector('form');
@@ -112,5 +116,12 @@
 
         </form>
     </div>
+    <script>
+    // عند إرسال النموذج (الضغط على تسجيل الدخول)
+    document.querySelector('form').addEventListener('submit', function() {
+        // ابحث عن الـ loader واجعله يظهر
+        document.getElementById('loader').style.display = 'block';
+    });
+</script>
 </body>
 </html>
